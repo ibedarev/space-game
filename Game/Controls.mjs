@@ -1,3 +1,6 @@
+const minSpeed = 1;
+const maxSpeed = 1000;
+
 export class Controls extends EventTarget {
   static speedChange = "speedChange";
   #container;
@@ -27,7 +30,7 @@ export class Controls extends EventTarget {
   }
 
   get speed() {
-    return Number(this.#speedSlider.value);
+    return maxSpeed - Number(this.#speedSlider.value);
   }
 
   /**
@@ -50,8 +53,9 @@ export class Controls extends EventTarget {
 
     this.#speedSlider = document.createElement("input");
     this.#speedSlider.type = "range";
-    this.#speedSlider.min = "1";
-    this.#speedSlider.max = "1000";
+    this.#speedSlider.min = String(minSpeed);
+    this.#speedSlider.max = String(maxSpeed);
+    this.#speedSlider.value = String(maxSpeed / 2);
     const labelSpeed = document.createElement("label");
     labelSpeed.textContent = "Speed";
     labelSpeed.appendChild(this.#speedSlider);
