@@ -40,7 +40,11 @@ export class RenderingEngine {
     this.#canvas.height = this.#height;
 
     for (const point of data) {
-      this.#ctx.fillRect(point.x, point.y, point.size, point.size);
+      this.#ctx.beginPath();
+      this.#ctx.arc(point.x, point.y, point.size, 0, Math.PI * 2);
+      this.#ctx.fillStyle = "lightblue";
+      this.#ctx.fill();
+      this.#ctx.stroke();
     }
     // ...
   }

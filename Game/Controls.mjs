@@ -3,6 +3,7 @@ const maxSpeed = 1000;
 
 export class Controls extends EventTarget {
   static speedChange = "speedChange";
+  static sizeChange = "sizeChange";
   #container;
 
   /**
@@ -66,9 +67,16 @@ export class Controls extends EventTarget {
 
     this.#sizeSlider = document.createElement("input");
     this.#sizeSlider.type = "range";
+    this.#sizeSlider.min = String(1);
+    this.#sizeSlider.max = String(10);
+    this.#sizeSlider.value = String(5);
     const labelSize = document.createElement("label");
     labelSize.textContent = "Size";
     labelSize.appendChild(this.#sizeSlider);
+
+    this.#sizeSlider.addEventListener("input", () => {
+      this.dispatchEvent(new Event(Controls.sizeChange));
+    });
 
     parentContainer.appendChild(labelSpeed);
     parentContainer.appendChild(labelSize);
