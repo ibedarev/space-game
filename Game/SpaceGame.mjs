@@ -29,6 +29,11 @@ export class SpaceGame {
       this.#scheduleTick.bind(this)
     );
 
+    this.#controls.addEventListener(
+      Controls.sizeChange,
+      this.#changeSizePoints.bind(this)
+    );
+
     window.addEventListener("resize", this.#onWindowResize.bind(this));
     this.#scheduleTick();
     window.addPoint = this.#addPoint.bind(this);
@@ -39,7 +44,7 @@ export class SpaceGame {
         Math.random() * window.innerHeight,
         Math.random() * 2 - 1,
         Math.random() * 2 - 1,
-        10
+        this.#controls.size
       );
     });
   }
@@ -67,5 +72,11 @@ export class SpaceGame {
 
   #addPoint(x, y, velX, velY, size) {
     this.#points.push(new Point(x, y, velX, velY, size));
+  }
+
+  #changeSizePoints() {
+    for (const point of this.#points) {
+      point.size = this.#controls.size;
+    }
   }
 }

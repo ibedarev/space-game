@@ -1,5 +1,9 @@
+const minSpeed = 1;
+const maxSpeed = 1000;
+
 export class Controls extends EventTarget {
   static speedChange = "speedChange";
+  static sizeChange = "sizeChange";
   #container;
 
   /**
@@ -27,7 +31,7 @@ export class Controls extends EventTarget {
   }
 
   get speed() {
-    return Number(this.#speedSlider.value);
+    return maxSpeed - Number(this.#speedSlider.value);
   }
 
   /**
@@ -50,8 +54,9 @@ export class Controls extends EventTarget {
 
     this.#speedSlider = document.createElement("input");
     this.#speedSlider.type = "range";
-    this.#speedSlider.min = "1";
-    this.#speedSlider.max = "1000";
+    this.#speedSlider.min = String(minSpeed);
+    this.#speedSlider.max = String(maxSpeed);
+    this.#speedSlider.value = String(maxSpeed / 2);
     const labelSpeed = document.createElement("label");
     labelSpeed.textContent = "Speed";
     labelSpeed.appendChild(this.#speedSlider);
@@ -62,9 +67,16 @@ export class Controls extends EventTarget {
 
     this.#sizeSlider = document.createElement("input");
     this.#sizeSlider.type = "range";
+    this.#sizeSlider.min = String(1);
+    this.#sizeSlider.max = String(10);
+    this.#sizeSlider.value = String(5);
     const labelSize = document.createElement("label");
     labelSize.textContent = "Size";
     labelSize.appendChild(this.#sizeSlider);
+
+    this.#sizeSlider.addEventListener("input", () => {
+      this.dispatchEvent(new Event(Controls.sizeChange));
+    });
 
     parentContainer.appendChild(labelSpeed);
     parentContainer.appendChild(labelSize);
