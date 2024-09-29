@@ -10,5 +10,7 @@
 .controls-wrapper {
   display: flex;
 
+  color: #ffff;
+
   gap: 16px;
 }

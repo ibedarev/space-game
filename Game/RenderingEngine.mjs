@@ -39,6 +39,9 @@ export class RenderingEngine {
     this.#canvas.width = this.#width;
     this.#canvas.height = this.#height;
 
+    this.#ctx.fillStyle = "dark";
+    this.#ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
+
     for (const point of data) {
       this.#ctx.beginPath();
       this.#ctx.arc(point.x, point.y, point.size, 0, Math.PI * 2);

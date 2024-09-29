@@ -51,10 +51,14 @@ export class SpaceGame {
 
   #scheduleTick() {
     clearInterval(this.#tickTimeoutId);
-    this.#tickTimeoutId = setInterval(
-      this.#tick.bind(this),
-      this.#controls.speed
-    );
+
+    const minSpeed = 10;
+    const maxSpeed = 200;
+    const speedPercent = this.#controls.speed;
+    const currentSpeed =
+      maxSpeed - ((maxSpeed - minSpeed) * speedPercent) / 100;
+
+    this.#tickTimeoutId = setInterval(this.#tick.bind(this), currentSpeed);
   }
 
   #onWindowResize() {
