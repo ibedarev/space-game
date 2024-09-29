@@ -1,6 +1,7 @@
 import { Controls } from "./Controls.mjs";
 import { Point } from "../Models/Point.mjs";
 import { RenderingEngine } from "./RenderingEngine.mjs";
+import { overflowPointHandler } from "../utils/index.mjs";
 
 export class SpaceGame {
   #container;
@@ -53,7 +54,7 @@ export class SpaceGame {
     clearInterval(this.#tickTimeoutId);
 
     const minSpeed = 10;
-    const maxSpeed = 200;
+    const maxSpeed = 1000;
     const speedPercent = this.#controls.speed;
     const currentSpeed =
       maxSpeed - ((maxSpeed - minSpeed) * speedPercent) / 100;
@@ -66,9 +67,14 @@ export class SpaceGame {
   }
 
   #tick() {
+    const minX = 0;
+    const maxX = window.innerWidth;
+    const minY = 0;
+    const maxY = window.innerHeight;
+
     for (const point of this.#points) {
-      point.x += point.velX;
-      point.y += point.velY;
+      point.x = overflowPointHandler(point.x, point.velX, minX, maxX);
+      point.y = overflowPointHandler(point.y, point.velY, minY, maxY);
     }
 
     this.#renderEngine.render(this.#points);
