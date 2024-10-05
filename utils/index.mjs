@@ -1,3 +1,5 @@
+import { Point } from "../Models/Point.mjs";
+
 /**
  *
  * @param {number} x
@@ -6,7 +8,7 @@
  * @param {number} max
  * @returns
  */
-export function overflowPointHandler(x, dx, min, max) {
+export function infinityOverflowPointHandler(x, dx, min, max) {
   x += dx;
 
   const size = max - min;
@@ -20,4 +22,21 @@ export function overflowPointHandler(x, dx, min, max) {
   return x;
 }
 
-console.log(overflowPointHandler(11, -2, 10, 20));
+/**
+ *
+ * @param {Point} point
+ * @param {"x" | "y"} axis
+ * @param {number} min
+ * @param {number} max
+ */
+export function limitedOverflowPointHandler(point, axis, min, max) {
+  point[axis] += point[`vel${axis.toUpperCase()}`];
+
+  if (point[axis] + point.size >= max) {
+    point[axis] = max - point.size;
+    point[`vel${axis.toUpperCase()}`] = -point[`vel${axis.toUpperCase()}`];
+  } else if (point[axis] - point.size <= min) {
+    point[axis] = min + point.size;
+    point[`vel${axis.toUpperCase()}`] = -point[`vel${axis.toUpperCase()}`];
+  }
+}

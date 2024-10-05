@@ -1,5 +1,8 @@
+import { createControlLabel } from "../utils/components.mjs";
+
 const minSpeed = 0;
 const maxSpeed = 100;
+const modes = ["limited", "infinity"];
 
 export class Controls extends EventTarget {
   static speedChange = "speedChange";
@@ -17,6 +20,11 @@ export class Controls extends EventTarget {
   #sizeSlider;
 
   /**
+   * @type {"infinity" | "limited"}
+   */
+  #moveMode = "limited";
+
+  /**
    * @param {HTMLElement} container
    */
   constructor(container) {
@@ -32,6 +40,10 @@ export class Controls extends EventTarget {
 
   get speed() {
     return Number(this.#speedSlider.value);
+  }
+
+  get moveMode() {
+    return this.#moveMode;
   }
 
   /**
@@ -52,12 +64,16 @@ export class Controls extends EventTarget {
     const parentContainer = document.createElement("div");
     parentContainer.className = "controls-wrapper";
 
+    const title = document.createElement("h3");
+    title.textContent = "Settings:";
+    title.className = "title";
+
     this.#speedSlider = document.createElement("input");
     this.#speedSlider.type = "range";
     this.#speedSlider.min = minSpeed;
     this.#speedSlider.max = maxSpeed;
     this.#speedSlider.value = maxSpeed / 2;
-    const labelSpeed = document.createElement("label");
+    const labelSpeed = createControlLabel();
     labelSpeed.textContent = "Speed";
     labelSpeed.appendChild(this.#speedSlider);
 
@@ -70,7 +86,7 @@ export class Controls extends EventTarget {
     this.#sizeSlider.min = 1;
     this.#sizeSlider.max = 10;
     this.#sizeSlider.value = 5;
-    const labelSize = document.createElement("label");
+    const labelSize = createControlLabel();
     labelSize.textContent = "Size";
     labelSize.appendChild(this.#sizeSlider);
 
@@ -78,8 +94,31 @@ export class Controls extends EventTarget {
       this.dispatchEvent(new Event(Controls.sizeChange));
     });
 
+    const modesContainer = document.createElement("div");
+    modesContainer.className = "modes-wrapper";
+
+    modes.forEach((mode) => {
+      const modeToggle = document.createElement("input");
+      modeToggle.type = "radio";
+
+      modeToggle.value = mode;
+      modeToggle.name = "canvasMode";
+      modeToggle.checked = mode === this.#moveMode;
+      const toggleModeLabel = createControlLabel();
+      toggleModeLabel.textContent = `Mode: ${mode} `;
+      toggleModeLabel.appendChild(modeToggle);
+
+      modesContainer.appendChild(toggleModeLabel);
+
+      modeToggle.addEventListener("input", (e) => {
+        this.#moveMode = e.target.value;
+      });
+    });
+
+    parentContainer.appendChild(title);
     parentContainer.appendChild(labelSpeed);
     parentContainer.appendChild(labelSize);
+    parentContainer.appendChild(modesContainer);
 
     this.#container.appendChild(parentContainer);
   }
