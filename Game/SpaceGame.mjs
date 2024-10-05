@@ -1,7 +1,10 @@
 import { Controls } from "./Controls.mjs";
 import { Point } from "../Models/Point.mjs";
 import { RenderingEngine } from "./RenderingEngine.mjs";
-import { overflowPointHandler } from "../utils/index.mjs";
+import {
+  infinityOverflowPointHandler,
+  limitedOverflowPointHandler,
+} from "../utils/index.mjs";
 
 export class SpaceGame {
   #container;
@@ -73,8 +76,35 @@ export class SpaceGame {
     const maxY = window.innerHeight;
 
     for (const point of this.#points) {
-      point.x = overflowPointHandler(point.x, point.velX, minX, maxX);
-      point.y = overflowPointHandler(point.y, point.velY, minY, maxY);
+      switch (this.#controls.moveMode) {
+        case "infinity":
+          point.x = infinityOverflowPointHandler(
+            point.x,
+            point.velX,
+            minX,
+            maxX
+          );
+          point.y = infinityOverflowPointHandler(
+            point.y,
+            point.velY,
+            minY,
+            maxY
+          );
+
+          break;
+
+        case "limited":
+          limitedOverflowPointHandler(point, "x", minX, maxX);
+          limitedOverflowPointHandler(point, "y", minY, maxY);
+
+          break;
+
+        default:
+          point.x += point.velX;
+          point.y += point.velY;
+
+          break;
+      }
     }
 
     this.#renderEngine.render(this.#points);
